@@ -16,5 +16,12 @@ public class Imc {
             throw new IllegalArgumentException("La taille doit être supérieure à zéro.");
         }
     }
+
+	public Object getTaille() {
+		return taille;
+	}
+	public Object getPoids() {
+		return poids;
+	}
 }
 

@@ -1,16 +1,17 @@
-package project.servlet;
+package project3.servlet;
 
-import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import project.model.Imc;
 
-@WebServlet("/CalculDeMonImc")
-public class CalculDeMonImc extends HttpServlet {
+import java.io.IOException;
+
+@WebServlet("/CalculDeMonImc2")
+public class CalculDeMonImc2 extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
@@ -27,32 +28,19 @@ public class CalculDeMonImc extends HttpServlet {
             double poids = Double.parseDouble(poidsStr);
 
             Imc imc = new Imc(taille, poids);
+            HttpSession session = request.getSession();
+            session.setAttribute("imc", imc);
             double resultatImc = imc.calcul();
-
-            Cookie cookieTaille = new Cookie("taille", String.valueOf(taille));
-            Cookie cookiePoids = new Cookie("poids", String.valueOf(poids));
-            Cookie cookieImc = new Cookie("imc", String.valueOf(resultatImc));
-
-            cookieTaille.setMaxAge(60 * 60);  
-            cookiePoids.setMaxAge(60 * 60); 
-            cookieImc.setMaxAge(60 * 60);   
-
-            response.addCookie(cookieTaille);
-            response.addCookie(cookiePoids);
-            response.addCookie(cookieImc);
-
+            
             request.setAttribute("resultatImc", resultatImc);
 
             request.getRequestDispatcher("resultat.jsp").forward(request, response);
-        } catch (NumberFormatException e) {
-            request.setAttribute("error", "Les valeurs de taille et de poids doivent être des nombres valides.");
-            request.getRequestDispatcher("index.html").forward(request, response);
-        } catch (IllegalArgumentException e) {
+
+        } catch (Exception e) {
             request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher("index.html").forward(request, response);
+            request.getRequestDispatcher("NewFile.html").forward(request, response);
         }
     }
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         doPost(request, response); 
